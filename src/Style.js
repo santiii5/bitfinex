@@ -1,3 +1,5 @@
+import styled, {css} from 'styled-components'
+
 export const color = '#061a44'
 export const color2 = '#010e2c'
 export const color3 = '#053c18'
@@ -19,3 +21,27 @@ export const fontSize2 = 'font-size: 1em';
 export const fontSize3 = 'font-size: .75em';
 
 export const textAlignCenter = 'ftext-align: center';
+
+export const TableRow = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  border-bottom: 1px solid grey;
+  padding: 2px 5px;
+  justify-items: right;
+
+  .amount {
+    color: red;
+  }
+
+  ${props => props.positiveAmount && css`
+    .amount {
+      color: green;
+    }
+  `}
+
+  ${props => props.header && css`
+    font-size: 18px;
+    color: yellow;
+    font-weight: bold;
+  `}
+`

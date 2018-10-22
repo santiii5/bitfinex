@@ -1,28 +1,16 @@
 import React from 'react'
 import Container from '../containers/container'
-import styled, {css} from 'styled-components'
+import { TableRow } from '../Style'
+import styled from 'styled-components'
 
 const BookLayout = styled.div`
 `
-const BookLine = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  border-bottom: 1px solid grey;
-  padding: 2px 5px;
-  justify-items: right;
 
-  ${props => props.header && css`
-    font-size: 18px;
-    color: yellow;
-    font-weight: bold;
-  `}
-`
 export default class Book extends Container {
   render() {
     const {
       data,
     } = this.props
-    console.log('book', data);
     const htmlElem = []
 
     if(data) {
@@ -32,25 +20,30 @@ export default class Book extends Container {
         const amount = trade[4]
 
         htmlElem.push(
-          <BookLine key={key} positiveAmount={amount > 0}>
+          <TableRow key={key} positiveAmount={amount > 0}>
             <div>{price}</div>
             <div>{orders}</div>
             <div>{amount}</div>
-          </BookLine>
+          </TableRow>
         )
-
       })
     }
+
+    const component = data ? (
+      <div>
+        <TableRow header={true}>
+          <div>Price</div>
+          <div>Orders</div>
+          <div>Amount</div>
+        </TableRow>
+        {htmlElem}
+      </div>
+    ) : 'Loading book...'
 
     return (
       <BookLayout>
         <h3>Book</h3>
-        <BookLine header={true}>
-          <div>Price</div>
-          <div>Orders</div>
-          <div>Amount</div>
-        </BookLine>
-        {htmlElem}
+        {component}
       </BookLayout>
     )
   }

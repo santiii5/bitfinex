@@ -96,7 +96,7 @@ class App extends Container {
           <img src={logo} alt="logo" />
         </AppHeader>
         <AppLayout>
-          <Ticker data={this.props.AppReducer.tickerData} />
+          <Ticker data={this.props.AppReducer.tickerData} pair={this.props.AppReducer.pair} />
           <Trades data={this.props.AppReducer.tradesData} />
           <Book data={this.props.AppReducer.bookData} />
         </AppLayout>

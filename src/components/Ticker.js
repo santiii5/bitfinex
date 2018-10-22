@@ -3,13 +3,13 @@ import Container from '../containers/container'
 import styled from 'styled-components'
 import {numberFormat} from '../helpers/utils'
 
-const TickerLayout = styled.div`
+const TickerLayout = styled.div``
 
-`
 export default class Ticker extends Container {
   render() {
     const {
       data,
+      pair,
     } = this.props
     let lastPrice
     let percentChangeDay
@@ -21,13 +21,22 @@ export default class Ticker extends Container {
       dayVolume = data[7]
     }
 
-    return data ? (
+    const colorStyle = percentChangeDay > 0 ? 'green' : 'red'
+
+    const component = data ? (
+      <div>
+        <p>{pair}</p>
+        <p>Last price: {lastPrice}</p>
+        <p>% Change: <span style={{color: colorStyle, fontSize: '18px'}}>{percentChangeDay}</span></p>
+        <p>Day volume: {numberFormat(dayVolume)}</p>
+      </div>
+    ) : 'Loading ticker'
+
+    return (
       <TickerLayout>
         <h3>Ticker</h3>
-        <p>Last price: {lastPrice}</p>
-        <p>% Change: {percentChangeDay}</p>
-        <p>Day volume: {numberFormat(dayVolume)}</p>
+        {component}
       </TickerLayout>
-    ) : 'Loading ticker'
+    )
   }
 }
