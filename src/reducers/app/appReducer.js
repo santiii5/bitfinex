@@ -6,24 +6,14 @@ export default (state = {}, action) => {
     tickerData: action.data
    }
    case 'API_FETCHING_TRADES':
-     let data = action.data
-     let newData = {
-       data,
-       ...state.tradesData,
-     }
      return {
         ...state,
-       tradesData: newData,
+       tradesData: action.data,
      }
    case 'API_FETCHING_BOOK':
-     data = action.data
-     newData = {
-       data,
-       ...state.bookData,
-     }
     return {
       ...state,
-     bookData: newData
+     bookData: action.data
    }
   default:
    return state

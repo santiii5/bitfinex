@@ -54,14 +54,21 @@ class App extends Container {
   }
 
   receiveTrades(data) {
-    const {
+    let {
       tradesData,
     } = this.props.AppReducer
     const isValidData = data.event === undefined && data[1] !== 'hb'
 
     if (isValidData && tradesData !== data) {
-      const theData = typeof data[1] !== 'string' ? data[1] : data[2]
-      this.fetchingTrades(theData)
+      let theData = typeof data[1] !== 'string' ? data[1] : data[2]
+      let newData = theData
+
+      if (!Array.isArray(theData[1])) {
+        newData = tradesData.slice()
+        newData.unshift(theData)
+      }
+
+      this.fetchingTrades(newData)
     }
   }
 

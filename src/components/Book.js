@@ -10,7 +10,7 @@ export default class Book extends Container {
     const {
       data,
     } = this.props
-    console.log('book', data);
+    // console.log('book', data);
     return (
       <BookLayout>
         <h3>Book</h3>

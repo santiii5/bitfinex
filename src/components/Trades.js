@@ -26,8 +26,9 @@ export default class Trades extends Container {
       data,
     } = this.props
     const htmlElem = []
-    if(data && data.data) {
-      data.data.forEach((trade, key) => {
+
+    if(data) {
+      data.forEach((trade, key) => {
         const date = new Date(trade[1])
         const price = trade[3]
         const amount = trade[2]
