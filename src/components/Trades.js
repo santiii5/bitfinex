@@ -13,6 +13,16 @@ const TradeLine = styled.div`
   padding: 2px 5px;
   justify-items: right;
 
+  .amount {
+    color: red;
+  }
+
+  ${props => props.positiveAmount && css`
+    .amount {
+      color: green;
+    }
+  `}
+
   ${props => props.header && css`
     font-size: 18px;
     color: yellow;
@@ -28,15 +38,15 @@ export default class Trades extends Container {
     const htmlElem = []
 
     if(data) {
-      data.forEach((trade, key) => {
+      data.slice(0, 20).forEach((trade, key) => {
         const date = new Date(trade[1])
-        const price = trade[3]
         const amount = trade[2]
+        const price = trade[3]
 
         htmlElem.push(
-          <TradeLine key={key}>
+          <TradeLine key={key} positiveAmount={amount > 0}>
             <div>{date.toLocaleTimeString()}</div>
-            <div>{numberFormat(amount)}</div>
+            <div className="amount">{numberFormat(amount)}</div>
             <div>{numberFormat(price)}</div>
           </TradeLine>
         )

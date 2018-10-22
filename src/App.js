@@ -77,9 +77,15 @@ class App extends Container {
       bookData,
     } = this.props.AppReducer
     const isValidData = data.event === undefined && typeof data[1] !== 'string'
-
     if (isValidData && bookData !== data) {
-      this.fetchingBook(data[1])
+      let theData = [data[1]]
+      let newData = theData
+
+      if (Array.isArray(bookData) && Array.isArray(data[1])) {
+        newData = bookData.slice()
+        newData.unshift(data[1])
+      }
+      this.fetchingBook(newData)
     }
   }
 
