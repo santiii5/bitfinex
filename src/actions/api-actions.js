@@ -18,3 +18,10 @@ export const fetchingBook = (data) => dispatch => {
 		data,
 	})
 }
+
+export const updatePair = (data) => dispatch => {
+	dispatch({
+		type: 'API_UPDATE_PAIR',
+		data,
+	})
+}

@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import Container from '../containers/container'
 import { TableRow } from '../Style'
 import styled from 'styled-components'
@@ -7,6 +8,14 @@ const BookLayout = styled.div`
 `
 
 export default class Book extends Container {
+  static propTypes = {
+		data: PropTypes.array,
+	}
+
+  static defaultProps = {
+		data: null,
+	}
+
   render() {
     const {
       data,

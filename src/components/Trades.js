@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import Container from '../containers/container'
 import styled from 'styled-components'
 import { TableRow } from '../Style'
@@ -8,6 +9,14 @@ const TradesLayout = styled.div`
 `
 
 export default class Trades extends Container {
+  static propTypes = {
+		data: PropTypes.array,
+	}
+
+  static defaultProps = {
+		data: null,
+	}
+
   render() {
     const {
       data,

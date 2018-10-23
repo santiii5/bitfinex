@@ -1,9 +1,10 @@
 import React from 'react'
-import logo from './logo.png';
+import logo from './logo.png'
+// import _ from 'lodash'
 import './App.css'
 import { connect } from 'react-redux'
 import {startTickerWebsocket, startTradesWebsocket, startBookWebsocket} from './config/api'
-import { fetchingTicker, fetchingTrades, fetchingBook } from './actions/api-actions'
+import { fetchingTicker, fetchingTrades, fetchingBook, updatePair } from './actions/api-actions'
 import Container from './containers/container'
 import styled from 'styled-components'
 import Book from './components/Book'
@@ -34,6 +35,7 @@ class App extends Container {
     this.fetchingTicker = props.fetchingTicker.bind(this)
     this.fetchingTrades = props.fetchingTrades.bind(this)
     this.fetchingBook = props.fetchingBook.bind(this)
+    this.updatePair = props.updatePair.bind(this)
   }
 
   componentDidMount() {
@@ -89,21 +91,41 @@ class App extends Container {
     }
   }
 
+  changePair(newPair) {
+    this.updatePair(newPair)
+    // Clean current reducer data (all)
+    // Stop all the websockets
+    // Start all the websockets with the new Pair
+  }
+
   render() {
+    const {
+      tickerData,
+      pair,
+      availablePairs,
+      bookData,
+      tradesData,
+    } = this.props.AppReducer
+
     return (
       <div className="App">
         <AppHeader>
           <img src={logo} alt="logo" />
         </AppHeader>
         <AppLayout>
-          <Ticker data={this.props.AppReducer.tickerData} pair={this.props.AppReducer.pair} />
-          <Trades data={this.props.AppReducer.tradesData} />
-          <Book data={this.props.AppReducer.bookData} />
+          <Ticker
+            data={tickerData}
+            pair={pair}
+            availablePairs={availablePairs}
+            changePair={this.changePair.bind(this)}
+          />
+          <Trades data={tradesData} />
+          <Book data={bookData} />
         </AppLayout>
 
-        <button onClick={startTickerWebsocket.bind(this, this.receiveTicker.bind(this))}>Open ticker</button>
-        <button onClick={startTradesWebsocket.bind(this, this.receiveTrades.bind(this))}>Open trades</button>
-        <button onClick={startBookWebsocket.bind(this, this.receiveBook.bind(this))}>Open books</button>
+        <button onClick={startTickerWebsocket.bind(this, this.receiveTicker.bind(this), pair)}>Open ticker</button>
+        <button onClick={startTradesWebsocket.bind(this, this.receiveTrades.bind(this), pair)}>Open trades</button>
+        <button onClick={startBookWebsocket.bind(this, this.receiveBook.bind(this), pair)}>Open books</button>
       </div>
     );
   }
@@ -116,7 +138,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   fetchingTicker: (data) => dispatch(fetchingTicker(data)),
   fetchingTrades: (data) => dispatch(fetchingTrades(data)),
-  fetchingBook: (data) => dispatch(fetchingBook(data))
+  fetchingBook: (data) => dispatch(fetchingBook(data)),
+  updatePair: (pair) => dispatch(updatePair(pair))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)

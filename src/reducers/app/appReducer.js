@@ -1,5 +1,6 @@
 const defaultState = {
-  pair: 'USD/BTC'
+  pair: 'BTCUSD',
+  availablePairs: ['BTCUSD', 'LTCUSD', 'ETHUSD']
 }
 
 export default (state = defaultState, action) => {
@@ -18,6 +19,11 @@ export default (state = defaultState, action) => {
       return {
         ...state,
         bookData: action.data
+      }
+    case 'API_UPDATE_PAIR':
+      return {
+        ...state,
+        pair: action.data
       }
     default:
       return state

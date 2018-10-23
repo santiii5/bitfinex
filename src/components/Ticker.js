@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import Container from '../containers/container'
 import styled from 'styled-components'
 import {numberFormat} from '../helpers/utils'
@@ -6,11 +7,52 @@ import {numberFormat} from '../helpers/utils'
 const TickerLayout = styled.div``
 
 export default class Ticker extends Container {
+  static propTypes = {
+		data: PropTypes.array,
+    pair: PropTypes.string.isRequired,
+    availablePairs: PropTypes.array.isRequired,
+    changePair: PropTypes.func.isRequired,
+	}
+
+  static defaultProps = {
+		data: null,
+	}
+
+  updatePair(newPair) {
+    const {
+      changePair,
+    } = this.props
+
+    changePair(this.refs.pairSelector.value)
+  }
+
+  renderPairSelector() {
+    const {
+      availablePairs,
+      pair,
+    } = this.props
+    const selectorOptions = []
+
+    availablePairs && availablePairs.forEach((avPair, key) => {
+      let htmlElem = <option key={key} value={avPair}>{avPair}</option>
+      pair === avPair ? selectorOptions.unshift(htmlElem) : selectorOptions.push(htmlElem)
+    })
+
+    const selector = (
+      <select ref="pairSelector" onChange={this.updatePair.bind(this)}>
+        {selectorOptions}
+      </select>
+    )
+
+    return selector
+  }
+
   render() {
     const {
       data,
       pair,
     } = this.props
+    const pairSelector = this.renderPairSelector()
     let lastPrice
     let percentChangeDay
     let dayVolume
@@ -35,6 +77,7 @@ export default class Ticker extends Container {
     return (
       <TickerLayout>
         <h3>Ticker</h3>
+        <div>{pairSelector}</div>
         {component}
       </TickerLayout>
     )
