@@ -28,7 +28,7 @@ export default (state = defaultState, action) => {
       }
     case 'API_UPDATE_PAIR':
       return {
-        ...state,
+        ...defaultState,
         pair: action.data
       }
     case 'API_STOP_ALL':

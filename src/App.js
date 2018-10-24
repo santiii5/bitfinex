@@ -50,6 +50,7 @@ class App extends Container {
     super(props)
 
     this.changePair = this.changePair.bind(this)
+    this.startAll = this.startAll.bind(this)
     this.offAll = this.offAll.bind(this)
     this.offTicker = this.offTicker.bind(this)
     this.offTrades = this.offTrades.bind(this)
@@ -63,10 +64,34 @@ class App extends Container {
     this.startAll()
   }
 
-  startAll() {
-    startTickerWebsocket(this.receiveTicker)
-    startTradesWebsocket(this.receiveTrades)
-    // startBookWebsocket(this.receiveBook)
+  componentWillReceiveProps(newProps) {
+    const {
+      pair,
+    } = this.props.AppReducer
+    const {
+      pair: newPair,
+      tickerStatus,
+      tradesStatus,
+      bookStatus,
+    } = newProps.AppReducer
+    if(newPair !== pair && !tickerStatus && !tradesStatus && !bookStatus) {
+      this.startAll(newProps.AppReducer)
+    }
+  }
+
+  startAll(props = this.props.AppReducer) {
+    const {
+      tickerStatus,
+      tradesStatus,
+      bookStatus,
+      pair,
+    } = props
+    console.log('holie',tickerStatus,
+    tradesStatus,
+    bookStatus,);
+    !tickerStatus && startTickerWebsocket(this.receiveTicker, pair)
+    !tradesStatus && startTradesWebsocket(this.receiveTrades, pair)
+    // !bookStatus && startBookWebsocket(this.receiveBook, pair)
   }
 
   receiveTicker(data) {
@@ -118,12 +143,10 @@ class App extends Container {
 
   changePair(newPair) {
     this.props.updatePair(newPair)
-    // Clean current reducer data (all)
-    // Stop all the websockets
-    // Start all the websockets with the new Pair
+    this.offAll()
   }
 
-  offAll() {
+  offAll(cb = null) {
     closeWebSocket('all')
     this.props.stopAll()
   }
@@ -166,21 +189,21 @@ class App extends Container {
             pair={pair}
             availablePairs={availablePairs}
             changePair={this.changePair}
-            startWebsocket={startTickerWebsocket.bind(this, this.receiveTicker.bind(this), pair)}
+            startWebsocket={startTickerWebsocket.bind(this, this.receiveTicker, pair)}
             stopWebsocket={this.offTicker}
             status={tickerStatus}
             socketText="Ticker"
           />
           <Trades
             data={tradesData}
-            startWebsocket={startTradesWebsocket.bind(this, this.receiveTrades.bind(this), pair)}
+            startWebsocket={startTradesWebsocket.bind(this, this.receiveTrades, pair)}
             stopWebsocket={this.offTrades}
             status={tradesStatus}
             socketText="Trades"
           />
           <Book
             data={bookData}
-            startWebsocket={startBookWebsocket.bind(this, this.receiveBook.bind(this), pair)}
+            startWebsocket={startBookWebsocket.bind(this, this.receiveBook, pair)}
             stopWebsocket={this.offBook}
             status={bookStatus}
             socketText="Book"

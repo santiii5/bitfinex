@@ -1,7 +1,7 @@
 const webSocketUrl = 'wss://api.bitfinex.com/ws/2'
 let webSockets = {}
 
-export function startTickerWebsocket(callback){
+export function startTickerWebsocket(callback, pair){
     const wss = new WebSocket(webSocketUrl)
     webSockets['ticker'] = wss
     wss.onmessage = (evt) => { msgAndCallback(evt, callback) }
@@ -10,13 +10,13 @@ export function startTickerWebsocket(callback){
     let msg = JSON.stringify({
       event: 'subscribe',
       channel: 'ticker',
-      symbol: 'tBTCUSD'
+      symbol: `t${pair}`
     })
 
     wss.onopen = () => wss.send(msg)
 }
 
-export function startTradesWebsocket(callback){
+export function startTradesWebsocket(callback, pair){
     const wss = new WebSocket(webSocketUrl)
     webSockets['trades'] = wss
     wss.onmessage = (evt) => { msgAndCallback(evt, callback) }
@@ -25,13 +25,13 @@ export function startTradesWebsocket(callback){
     let msg = JSON.stringify({
       event: 'subscribe',
       channel: 'trades',
-      symbol: 'tBTCUSD'
+      symbol: `t${pair}`
     })
 
     wss.onopen = () => wss.send(msg)
 }
 
-export function startBookWebsocket(callback){
+export function startBookWebsocket(callback, pair){
     const wss = new WebSocket(webSocketUrl)
     webSockets['book'] = wss
     wss.onmessage = (evt) => { msgAndCallback(evt, callback) }
@@ -40,7 +40,7 @@ export function startBookWebsocket(callback){
     let msg = JSON.stringify({
       event: 'subscribe',
       channel: 'book',
-      symbol: 'tBTCUSD',
+      symbol: `t${pair}`,
       prec: 'P3',
       freq: 'F1',
     })

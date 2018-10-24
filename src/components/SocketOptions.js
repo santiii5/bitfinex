@@ -45,8 +45,8 @@ export default class SocketOptions extends React.Component {
 
     return (
       <SocketControl>
-        <Button className="btn--green" onClick={this.onSocket.bind(this)}>{startText}</Button>
-        <Button className="btn--red" onClick={this.offSocket.bind(this)}>{stopText}</Button>
+        <Button className="btn--green" onClick={this.onSocket.bind(this)} disabled={status}>{startText}</Button>
+        <Button className="btn--red" onClick={this.offSocket.bind(this)} disabled={!status}>{stopText}</Button>
         <SocketStatus status={status}>{socketText} status</SocketStatus>
       </SocketControl>
     )

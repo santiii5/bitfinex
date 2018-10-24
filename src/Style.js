@@ -74,6 +74,11 @@ export const Button = styled.button`
       background-color: #ec2323;
     }
   }
+
+  ${props => props.disabled && css`
+    pointer-events: none;
+    opacity: 0.4;
+  `}
 `
 
 export const SocketControl = styled.div`
