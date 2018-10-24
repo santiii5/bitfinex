@@ -3,13 +3,20 @@ import logo from './logo.png'
 // import _ from 'lodash'
 import './App.css'
 import { connect } from 'react-redux'
-import {startTickerWebsocket, startTradesWebsocket, startBookWebsocket} from './config/api'
+import {startTickerWebsocket, startTradesWebsocket, startBookWebsocket, closeWebSocket} from './config/api'
 import { fetchingTicker, fetchingTrades, fetchingBook, updatePair } from './actions/api-actions'
 import Container from './containers/container'
 import styled from 'styled-components'
-import Book from './components/Book'
-import Trades from './components/Trades'
-import Ticker from './components/Ticker'
+// import Book from './components/Book'
+// import Trades from './components/Trades'
+// import Ticker from './components/Ticker'
+// import SocketOptions from './SocketOptions'
+import {
+  Book,
+  Trades,
+  Ticker,
+  SocketOptions,
+} from './components/'
 
 const AppHeader = styled.div`
   background-color: white;
@@ -36,12 +43,17 @@ class App extends Container {
     this.fetchingTrades = props.fetchingTrades.bind(this)
     this.fetchingBook = props.fetchingBook.bind(this)
     this.updatePair = props.updatePair.bind(this)
+    this.startAll = this.startAll.bind(this)
   }
 
   componentDidMount() {
+    this.startAll()
+  }
+
+  startAll() {
     startTickerWebsocket(this.receiveTicker.bind(this))
     startTradesWebsocket(this.receiveTrades.bind(this))
-    startBookWebsocket(this.receiveBook.bind(this))
+    // startBookWebsocket(this.receiveBook.bind(this))
   }
 
   receiveTicker(data) {
@@ -105,6 +117,9 @@ class App extends Container {
       availablePairs,
       bookData,
       tradesData,
+      tickerStatus,
+      tradesStatus,
+      bookStatus,
     } = this.props.AppReducer
 
     return (
@@ -118,14 +133,30 @@ class App extends Container {
             pair={pair}
             availablePairs={availablePairs}
             changePair={this.changePair.bind(this)}
+            startWebsocket={startTickerWebsocket.bind(this, this.receiveTicker.bind(this), pair)}
+            stopWebsocket={closeWebSocket.bind(this, 'ticker')}
+            tickerStatus={tickerStatus}
           />
-          <Trades data={tradesData} />
-          <Book data={bookData} />
+          <Trades
+            data={tradesData}
+            startWebsocket={startTradesWebsocket.bind(this, this.receiveTrades.bind(this), pair)}
+            stopWebsocket={closeWebSocket.bind(this, 'trades')}
+            tradesStatus={tradesStatus}
+          />
+          <Book
+            data={bookData}
+            startWebsocket={startBookWebsocket.bind(this, this.receiveBook.bind(this), pair)}
+            stopWebsocket={closeWebSocket.bind(this, 'book')}
+            bookStatus={bookStatus}
+          />
         </AppLayout>
 
-        <button onClick={startTickerWebsocket.bind(this, this.receiveTicker.bind(this), pair)}>Open ticker</button>
-        <button onClick={startTradesWebsocket.bind(this, this.receiveTrades.bind(this), pair)}>Open trades</button>
-        <button onClick={startBookWebsocket.bind(this, this.receiveBook.bind(this), pair)}>Open books</button>
+        <SocketOptions
+          startSocket={this.startAll()}
+          startText="Start All"
+          stopSocket={closeWebSocket.bind(this, 'all')}
+          stopText="Stop all"
+        />
       </div>
     );
   }

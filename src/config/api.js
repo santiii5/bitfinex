@@ -1,13 +1,11 @@
 const webSocketUrl = 'wss://api.bitfinex.com/ws/2'
+let webSockets = {}
 
 export function startTickerWebsocket(callback){
     const wss = new WebSocket(webSocketUrl)
-    wss.onmessage = (evt) => { tickerMessage(evt, callback) };
-    wss.onclose = function(){
-      if(!window.timerID){
-       window.timerID=setInterval(function(){startTickerWebsocket(webSocketUrl)}, 5000);
-      }
-    }
+    webSockets['ticker'] = wss
+    wss.onmessage = (evt) => { msgAndCallback(evt, callback) }
+    wss.onclose = () => reOpenSocket.bind(this, startTickerWebsocket, webSocketUrl)
 
     let msg = JSON.stringify({
       event: 'subscribe',
@@ -20,12 +18,9 @@ export function startTickerWebsocket(callback){
 
 export function startTradesWebsocket(callback){
     const wss = new WebSocket(webSocketUrl)
-    wss.onmessage = (evt) => { tradesMessage(evt, callback) };
-    wss.onclose = function(){
-      if(!window.timerID){
-       window.timerID=setInterval(function(){startTradesWebsocket(webSocketUrl)}, 5000);
-      }
-    }
+    webSockets['trades'] = wss
+    wss.onmessage = (evt) => { msgAndCallback(evt, callback) }
+    wss.onclose = () => reOpenSocket.bind(this, startTradesWebsocket, webSocketUrl)
 
     let msg = JSON.stringify({
       event: 'subscribe',
@@ -38,39 +33,30 @@ export function startTradesWebsocket(callback){
 
 export function startBookWebsocket(callback){
     const wss = new WebSocket(webSocketUrl)
-    wss.onmessage = (evt) => { bookMessage(evt, callback) };
-    wss.onclose = function(){
-      if(!window.timerID){
-       window.timerID=setInterval(function(){startBookWebsocket(webSocketUrl)}, 5000);
-      }
-    }
+    webSockets['book'] = wss
+    wss.onmessage = (evt) => { msgAndCallback(evt, callback) }
+    wss.onclose = () => reOpenSocket.bind(this, startBookWebsocket, webSocketUrl)
 
     let msg = JSON.stringify({
       event: 'subscribe',
-      channel: 'ticker',
+      channel: 'book',
       symbol: 'tBTCUSD',
-      precission: 'P3',
+      prec: 'P3',
+      freq: 'F1',
     })
 
     wss.onopen = () => wss.send(msg)
 }
 
-function tickerMessage(msg, callback) {
-  const dataFormatted = JSON.parse(msg.data)
-  callback(dataFormatted)
-  handleError(msg)
+function reOpenSocket(callback, socket) {
+  if(!window.timerID){
+   window.timerID=setInterval(function(){callback(socket)}, 5000)
+  }
 }
 
-function tradesMessage(msg, callback) {
+function msgAndCallback(msg, callback) {
   const dataFormatted = JSON.parse(msg.data)
-  callback(dataFormatted)
-  handleError(msg)
-}
-
-function bookMessage(msg, callback) {
-  const dataFormatted = JSON.parse(msg.data)
-  console.log(msg);
-  callback(dataFormatted)
+  callback && typeof callback === 'function' && callback(dataFormatted)
   handleError(msg)
 }
 
@@ -82,7 +68,12 @@ function handleError(msg) {
   }
 }
 
-// export function closeWebsocket() {
-//   closeSocket = true
-//   startWebsocket()
-// }
+export function closeWebSocket(socket = 'all') {
+  if(socket === 'all') {
+    for (let key in webSockets) {
+      webSockets.hasOwnProperty(key) && webSockets[key].close()
+    }
+  } else {
+    webSockets[socket].close()
+  }
+}

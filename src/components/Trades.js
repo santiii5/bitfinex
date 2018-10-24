@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import SocketOptions from './SocketOptions'
 import Container from '../containers/container'
 import styled from 'styled-components'
 import { TableRow } from '../Style'
-import { numberFormat } from '../helpers/utils'
+import { numberFormat, numberWithCommas } from '../helpers/utils'
 
 const TradesLayout = styled.div`
 `
@@ -11,6 +12,8 @@ const TradesLayout = styled.div`
 export default class Trades extends Container {
   static propTypes = {
 		data: PropTypes.array,
+    startWebsocket: PropTypes.func.isRequired,
+    stopWebsocket: PropTypes.func.isRequired,
 	}
 
   static defaultProps = {
@@ -20,6 +23,8 @@ export default class Trades extends Container {
   render() {
     const {
       data,
+      startWebsocket,
+      stopWebsocket,
     } = this.props
     const htmlElem = []
 
@@ -33,7 +38,7 @@ export default class Trades extends Container {
           <TableRow key={key} positiveAmount={amount > 0}>
             <div>{date.toLocaleTimeString()}</div>
             <div className="amount">{numberFormat(amount)}</div>
-            <div>{numberFormat(price)}</div>
+            <div>{numberWithCommas(price.toFixed(2))}</div>
           </TableRow>
         )
       })
@@ -54,6 +59,10 @@ export default class Trades extends Container {
       <TradesLayout>
         <h3>Trades</h3>
         {component}
+        <SocketOptions
+          startSocket={startWebsocket.bind(this)}
+          stopSocket={stopWebsocket.bind(this)}
+        />
       </TradesLayout>
     )
   }

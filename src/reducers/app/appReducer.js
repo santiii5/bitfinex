@@ -1,6 +1,9 @@
 const defaultState = {
   pair: 'BTCUSD',
-  availablePairs: ['BTCUSD', 'LTCUSD', 'ETHUSD']
+  availablePairs: ['BTCUSD', 'LTCUSD', 'ETHUSD'],
+  tickerStatus: false,
+  tradesStatus: false,
+  bookStatus: false,
 }
 
 export default (state = defaultState, action) => {

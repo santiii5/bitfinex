@@ -45,3 +45,54 @@ export const TableRow = styled.div`
     font-weight: bold;
   `}
 `
+
+export const Button = styled.button`
+  padding: 8px 15px;
+  font-size: 16px;
+  border: none;
+  border-radius: 3px;
+  transition: 0.3s ease all;
+  cursor: pointer;
+  color: white;
+
+  &.btn--green {
+    background-color: #3e863e;
+
+    &:hover {
+      background-color: #199e19;
+    }
+  }
+
+  &.btn--red {
+    background-color: #ec4646;
+
+    &:hover {
+      background-color: #ec2323;
+    }
+  }
+`
+
+export const SocketControl = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 15px;
+  margin-top: 20px;
+`
+
+export const SocketStatus = styled.div`
+  position: relative;
+  font-size: 12px;
+  text-align:right;
+  padding: 10px 20px 0 0;
+
+  &::after {
+    position: absolute;
+    right: 0;
+    top: 12px;
+    content: " ";
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: red;
+  }
+`
