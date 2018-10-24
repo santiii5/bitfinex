@@ -169,18 +169,21 @@ class App extends Container {
             startWebsocket={startTickerWebsocket.bind(this, this.receiveTicker.bind(this), pair)}
             stopWebsocket={this.offTicker}
             status={tickerStatus}
+            socketText="Ticker"
           />
           <Trades
             data={tradesData}
             startWebsocket={startTradesWebsocket.bind(this, this.receiveTrades.bind(this), pair)}
             stopWebsocket={this.offTrades}
             status={tradesStatus}
+            socketText="Trades"
           />
           <Book
             data={bookData}
             startWebsocket={startBookWebsocket.bind(this, this.receiveBook.bind(this), pair)}
             stopWebsocket={this.offBook}
             status={bookStatus}
+            socketText="Book"
           />
         </AppLayout>
         <AppFooter>
@@ -189,6 +192,7 @@ class App extends Container {
             stopSocket={this.offAll}
             startText="Start All"
             stopText="Stop all"
+            socketText="All sockets"
             status={tickerStatus && tradesStatus && bookStatus}
           />
         </AppFooter>

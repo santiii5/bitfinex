@@ -8,12 +8,14 @@ export default class SocketOptions extends React.Component {
     stopSocket: PropTypes.func.isRequired,
     startText: PropTypes.string,
     stopText: PropTypes.string,
+    socketText: PropTypes.string,
     status: PropTypes.bool,
 	}
 
   static defaultProps = {
 		startText: 'Start',
     stopText: 'Stop',
+    socketText: 'Socket',
     status: false,
 	}
 
@@ -37,6 +39,7 @@ export default class SocketOptions extends React.Component {
     const {
       startText,
       stopText,
+      socketText,
       status,
     } = this.props
 
@@ -44,7 +47,7 @@ export default class SocketOptions extends React.Component {
       <SocketControl>
         <Button className="btn--green" onClick={this.onSocket.bind(this)}>{startText}</Button>
         <Button className="btn--red" onClick={this.offSocket.bind(this)}>{stopText}</Button>
-        <SocketStatus status={status}>Socket status</SocketStatus>
+        <SocketStatus status={status}>{socketText} status</SocketStatus>
       </SocketControl>
     )
   }

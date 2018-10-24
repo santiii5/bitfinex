@@ -15,6 +15,7 @@ export default class Ticker extends Container {
     changePair: PropTypes.func.isRequired,
     startWebsocket: PropTypes.func.isRequired,
     stopWebsocket: PropTypes.func.isRequired,
+    socketText: PropTypes.string,
     status: PropTypes.bool,
 	}
 
@@ -57,6 +58,7 @@ export default class Ticker extends Container {
       pair,
       startWebsocket,
       stopWebsocket,
+      socketText,
       status,
     } = this.props
     const pairSelector = this.renderPairSelector()
@@ -89,6 +91,7 @@ export default class Ticker extends Container {
         <SocketOptions
           startSocket={startWebsocket.bind(this)}
           stopSocket={stopWebsocket.bind(this)}
+          socketText={socketText}
           status={status}
         />
       </TickerLayout>
