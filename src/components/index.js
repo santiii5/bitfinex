@@ -1,4 +1,4 @@
-export Book from './Book'
-export Ticker from './Ticker'
-export Trades from './Trades'
-export StockOptions from './StockOptions'
+export {default as Book} from './Book'
+export {default as Ticker} from './Ticker'
+export {default as Trades} from './Trades'
+export {default as SocketOptions} from './SocketOptions'

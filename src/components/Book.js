@@ -14,31 +14,19 @@ export default class Book extends Container {
 		data: PropTypes.array,
     startWebsocket: PropTypes.func.isRequired,
     stopWebsocket: PropTypes.func.isRequired,
+    status: PropTypes.bool,
 	}
 
   static defaultProps = {
 		data: null,
 	}
 
-  startSocket() {
-    const {
-      startWebsocket,
-    } = this.props
-
-    startWebsocket('book')
-  }
-
-  stopSocket() {
-    const {
-      stopWebsocket,
-    } = this.props
-
-    stopWebsocket('book')
-  }
-
   render() {
     const {
       data,
+      startWebsocket,
+      stopWebsocket,
+      status,
     } = this.props
     const htmlElem = []
 
@@ -74,8 +62,9 @@ export default class Book extends Container {
         <h3>Book</h3>
         {component}
         <SocketOptions
-          startSocket={this.startSocket.bind(this)}
-          stopSocket={this.stopSocket.bind(this)}
+          startSocket={startWebsocket.bind(this)}
+          stopSocket={stopWebsocket.bind(this)}
+          status={status}
         />
       </BookLayout>
     )

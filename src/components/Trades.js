@@ -14,6 +14,7 @@ export default class Trades extends Container {
 		data: PropTypes.array,
     startWebsocket: PropTypes.func.isRequired,
     stopWebsocket: PropTypes.func.isRequired,
+    status: PropTypes.bool,
 	}
 
   static defaultProps = {
@@ -25,6 +26,7 @@ export default class Trades extends Container {
       data,
       startWebsocket,
       stopWebsocket,
+      status,
     } = this.props
     const htmlElem = []
 
@@ -62,6 +64,7 @@ export default class Trades extends Container {
         <SocketOptions
           startSocket={startWebsocket.bind(this)}
           stopSocket={stopWebsocket.bind(this)}
+          status={status}
         />
       </TradesLayout>
     )

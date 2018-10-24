@@ -25,3 +25,27 @@ export const updatePair = (data) => dispatch => {
 		data,
 	})
 }
+
+export const stopAll = () => dispatch => {
+	dispatch({
+		type: 'API_STOP_ALL',
+	})
+}
+
+export const stopTicker = () => dispatch => {
+	dispatch({
+		type: 'API_STOP_TICKER',
+	})
+}
+
+export const stopTrades = () => dispatch => {
+	dispatch({
+		type: 'API_STOP_TRADES',
+	})
+}
+
+export const stopBook = () => dispatch => {
+	dispatch({
+		type: 'API_STOP_BOOK',
+	})
+}

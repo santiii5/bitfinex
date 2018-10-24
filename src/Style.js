@@ -55,6 +55,10 @@ export const Button = styled.button`
   cursor: pointer;
   color: white;
 
+  &:focus {
+    outline: 0;
+  }
+
   &.btn--green {
     background-color: #3e863e;
 
@@ -94,5 +98,9 @@ export const SocketStatus = styled.div`
     height: 10px;
     border-radius: 50%;
     background-color: red;
+
+    ${props => props.status && css`
+      background-color: green;
+    `}
   }
 `
