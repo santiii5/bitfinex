@@ -9,6 +9,14 @@ import styled from 'styled-components'
 const BookLayout = styled.div`
 `
 
+const BookSelling = styled.div`
+  background-color: red;
+`
+
+const BookBuying = styled.div`
+  background-color: green;
+`
+
 export default class Book extends Container {
   static propTypes = {
 		data: PropTypes.array,
@@ -22,6 +30,21 @@ export default class Book extends Container {
 		data: null,
 	}
 
+  renderElement(trade, key) {
+    const price = parseFloat(trade[0]).toFixed(2)
+    const orders = trade[1]
+    const amount = parseFloat(trade[2]).toFixed(2)
+    const component = (
+      <TableRow key={key} positiveAmount={amount > 0}>
+        <div>{numberWithCommas(price.toString())}</div>
+        <div>{orders}</div>
+        <div>{amount.toString()}</div>
+      </TableRow>
+    )
+
+    return component
+  }
+
   render() {
     const {
       data,
@@ -30,22 +53,21 @@ export default class Book extends Container {
       socketText,
       status,
     } = this.props
-    const htmlElem = []
+    let listBuying = []
+    let listSelling = []
+    const elemBuying = []
+    const elemSelling = []
 
-    if(data) {
-      data.slice(0, 20).forEach((trade, key) => {
-        const price = parseFloat(trade[0]).toFixed(2)
-        const orders = trade[1]
-        const amount = parseFloat(trade[2]).toFixed(2)
-        console.log(trade);
-        htmlElem.push(
-          <TableRow key={key} positiveAmount={amount > 0}>
-            <div>{numberWithCommas(price.toString())}</div>
-            <div>{orders}</div>
-            <div>{amount.toString()}</div>
-          </TableRow>
-        )
+    if(Object.keys(data).length > 0) {
+      data.forEach((trade, key) => {
+        trade[2] > 0 ? listBuying.push(trade) : listSelling.push(trade)
       })
+      
+      listBuying = listBuying.sort(([a], [b]) => a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0)
+      listSelling = listSelling.sort(([a], [b]) => a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0)
+
+      listBuying.forEach((trade, key) => elemBuying.push(this.renderElement(trade, key)))
+      listSelling.forEach((trade, key) => elemSelling.push(this.renderElement(trade, key)))
     }
 
     const component = data ? (
@@ -55,7 +77,12 @@ export default class Book extends Container {
           <div>Orders</div>
           <div>Amount</div>
         </TableRow>
-        {htmlElem}
+        <BookSelling>
+          {elemSelling}
+        </BookSelling>
+        <BookBuying>
+          {elemBuying}
+        </BookBuying>
       </div>
     ) : 'Loading book...'
 

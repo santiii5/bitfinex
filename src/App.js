@@ -1,5 +1,6 @@
 import React from 'react'
 import logo from './logo.png'
+import { mapState } from './helpers/utils'
 // import _ from 'lodash'
 import './App.css'
 import { connect } from 'react-redux'
@@ -67,28 +68,25 @@ class App extends Container {
   componentWillReceiveProps(newProps) {
     const {
       pair,
-    } = this.props.AppReducer
+    } = this.props
     const {
       pair: newPair,
       tickerStatus,
       tradesStatus,
       bookStatus,
-    } = newProps.AppReducer
+    } = newProps
     if(newPair !== pair && !tickerStatus && !tradesStatus && !bookStatus) {
-      this.startAll(newProps.AppReducer)
+      this.startAll(newProps)
     }
   }
 
-  startAll(props = this.props.AppReducer) {
+  startAll(props = this.props) {
     const {
       tickerStatus,
       tradesStatus,
       bookStatus,
       pair,
     } = props
-    console.log('holie',tickerStatus,
-    tradesStatus,
-    bookStatus,);
     !tickerStatus && startTickerWebsocket(this.receiveTicker, pair)
     !tradesStatus && startTradesWebsocket(this.receiveTrades, pair)
     // !bookStatus && startBookWebsocket(this.receiveBook, pair)
@@ -97,7 +95,7 @@ class App extends Container {
   receiveTicker(data) {
     const {
       tickerData,
-    } = this.props.AppReducer
+    } = this.props
     const isValidData = data.event === undefined && typeof data[1] !== 'string'
 
     if (isValidData && tickerData !== data) {
@@ -108,7 +106,7 @@ class App extends Container {
   receiveTrades(data) {
     let {
       tradesData,
-    } = this.props.AppReducer
+    } = this.props
     const isValidData = data.event === undefined && data[1] !== 'hb'
 
     if (isValidData && tradesData !== data) {
@@ -127,17 +125,13 @@ class App extends Container {
   receiveBook(data) {
     const {
       bookData,
-    } = this.props.AppReducer
+      fetchingBook,
+    } = this.props
+
     const isValidData = data.event === undefined && typeof data[1] !== 'string'
     if (isValidData && bookData !== data) {
-      let theData = [data[1]]
-      let newData = theData
-
-      if (Array.isArray(bookData) && Array.isArray(data[1])) {
-        newData = bookData.slice()
-        newData.unshift(data[1])
-      }
-      this.props.fetchingBook(newData)
+      const theData = Array.isArray(data[1][0]) ? data[1] : [data[1]]
+      fetchingBook(bookData.concat(theData))
     }
   }
 
@@ -176,7 +170,7 @@ class App extends Container {
       tickerStatus,
       tradesStatus,
       bookStatus,
-    } = this.props.AppReducer
+    } = this.props
 
     return (
       <div className="App">
@@ -224,9 +218,7 @@ class App extends Container {
   }
 }
 
-const mapStateToProps = state => ({
- ...state
-})
+const mapStateToProps = state => (mapState(state.AppReducer))
 
 const mapDispatchToProps = dispatch => ({
   fetchingTicker: (data) => dispatch(fetchingTicker(data)),

@@ -66,7 +66,7 @@ export default class Ticker extends Container {
     let percentChangeDay
     let dayVolume
 
-    if (data) {
+    if (Object.keys(data).length > 0) {
       lastPrice = numberWithCommas(data[6].toFixed(2))
       percentChangeDay = data[5]
       dayVolume = data[7]

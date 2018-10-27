@@ -32,7 +32,7 @@ export default class Trades extends Container {
     } = this.props
     const htmlElem = []
 
-    if(data) {
+    if(Object.keys(data).length > 0) {
       data.slice(0, 20).forEach((trade, key) => {
         const date = new Date(trade[1])
         const amount = trade[2]

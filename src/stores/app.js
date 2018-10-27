@@ -3,7 +3,7 @@ import thunkMiddleware from 'redux-thunk'
 import Immutable from 'immutable'
 
 // import * as GlobalReducers from '../reducers/globals/'
-import * as AppReducer from '../reducers/app/'
+import * as AppReducer from '../reducers/'
 
 // Combine app/reducers and globals/reducers files in one object
 const rootReducer = combineReducers({
