@@ -59,15 +59,13 @@ export default class Book extends Container {
     const elemSelling = []
 
     if(Object.keys(data).length > 0) {
-      data.forEach((trade, key) => {
+      data.slice(0, 50).forEach((trade, key) => {
         trade[2] > 0 ? listBuying.push(trade) : listSelling.push(trade)
       })
-      
-      listBuying = listBuying.sort(([a], [b]) => a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0)
-      listSelling = listSelling.sort(([a], [b]) => a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0)
 
+      // TODO: handle properly the array order
       listBuying.forEach((trade, key) => elemBuying.push(this.renderElement(trade, key)))
-      listSelling.forEach((trade, key) => elemSelling.push(this.renderElement(trade, key)))
+      listSelling.reverse().forEach((trade, key) => elemSelling.push(this.renderElement(trade, key)))
     }
 
     const component = data ? (
