@@ -42,7 +42,7 @@ export default class Trades extends Container {
           <TableRow key={key} positiveAmount={amount > 0}>
             <div>{date.toLocaleTimeString()}</div>
             <div className="amount">{numberFormat(amount)}</div>
-            <div>{numberWithCommas(price.toFixed(2))}</div>
+            <div>${numberWithCommas(price.toFixed(2))}</div>
           </TableRow>
         )
       })

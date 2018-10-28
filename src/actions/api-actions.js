@@ -1,51 +1,66 @@
-export const fetchingTicker = (data) => dispatch => {
-	dispatch({
-		type: 'API_FETCHING_TICKER',
-		data,
-	})
-}
+import Actions from './actions'
+import actionTypes from '../actiontypes/api'
+import {startTickerWebsocket, startTradesWebsocket, startBookWebsocket, closeWebSocket} from '../config/api'
 
-export const fetchingTrades = (data) => dispatch => {
-	dispatch({
-		type: 'API_FETCHING_TRADES',
-		data,
-	})
-}
+// import Utils from 'app/_globals/helpers/utils'
 
-export const fetchingBook = (data) => dispatch => {
-	dispatch({
-		type: 'API_FETCHING_BOOK',
-		data,
-	})
-}
+export default class ApiActions extends Actions {
+	actionTypes = actionTypes;
+	stateName = 'default';
 
-export const updatePair = (data) => dispatch => {
-	dispatch({
-		type: 'API_UPDATE_PAIR',
-		data,
-	})
-}
+	static forge(stateId = 'default') {
+		return new ApiActions(stateId)
+	}
 
-export const stopAll = () => dispatch => {
-	dispatch({
-		type: 'API_STOP_ALL',
-	})
-}
+  fetchingTicker(data) {
+  	return {
+  		type: this.actionTypes.FETCHING_TICKER,
+  		data,
+  	}
+  }
 
-export const stopTicker = () => dispatch => {
-	dispatch({
-		type: 'API_STOP_TICKER',
-	})
-}
+  fetchingTrades(data) {
+  	return {
+  		type: this.actionTypes.FETCHING_TRADES,
+  		data,
+  	}
+  }
 
-export const stopTrades = () => dispatch => {
-	dispatch({
-		type: 'API_STOP_TRADES',
-	})
-}
+  fetchingBook(data) {
+  	return {
+  		type: this.actionTypes.FETCHING_BOOK,
+  		data,
+  	}
+  }
 
-export const stopBook = () => dispatch => {
-	dispatch({
-		type: 'API_STOP_BOOK',
-	})
+  updatePair(data) {
+  	return {
+  		type: this.actionTypes.UPDATE_PAIR,
+  		data,
+  	}
+  }
+
+  stopAll() {
+  	return {
+  		type: this.actionTypes.STOP_ALL,
+  	}
+  }
+
+  stopTicker() {
+  	return {
+  		type: this.actionTypes.STOP_TICKER,
+  	}
+  }
+
+  stopTrades() {
+  	return {
+  		type: this.actionTypes.STOP_TRADES,
+  	}
+  }
+
+  stopBook() {
+  	return {
+  		type: this.actionTypes.STOP_BOOK,
+  	}
+  }
 }

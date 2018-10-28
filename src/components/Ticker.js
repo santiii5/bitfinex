@@ -79,7 +79,7 @@ export default class Ticker extends Container {
         <p>{pair}</p>
         <p>Last price: ${lastPrice}</p>
         <p>% Change 24h: <span style={{color: colorStyle, fontSize: '18px'}}>{percentChangeDay}</span></p>
-        <p>24h volume: {numberFormat(dayVolume)}</p>
+        <p>24h volume: {numberWithCommas(numberFormat(dayVolume))}</p>
       </div>
     ) : 'Loading ticker'
 

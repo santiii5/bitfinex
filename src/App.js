@@ -4,17 +4,19 @@ import { mapState } from './helpers/utils'
 // import _ from 'lodash'
 import './App.css'
 import { connect } from 'react-redux'
+import { stateProxy } from '../stores'
 import {startTickerWebsocket, startTradesWebsocket, startBookWebsocket, closeWebSocket} from './config/api'
-import {
-  fetchingTicker,
-  fetchingTrades,
-  fetchingBook,
-  updatePair,
-  stopAll,
-  stopTicker,
-  stopTrades,
-  stopBook,
-} from './actions/api-actions'
+// import {
+//   fetchingTicker,
+//   fetchingTrades,
+//   fetchingBook,
+//   updatePair,
+//   stopAll,
+//   stopTicker,
+//   stopTrades,
+//   stopBook,
+// } from './actions/api-actions'
+import ApiActions from './actions/api-actions'
 import Container from './containers/container'
 import styled from 'styled-components'
 import {
@@ -45,10 +47,18 @@ const AppFooter = styled.div`
   width: 500px;
   margin: 0 auto;
 `
+export default @connect((state, props) => {
+	const userState = stateProxy(state.auth, props.stateId)
 
+	return {
+		auth: userState.get('auth'),
+	}
+})
 class App extends Container {
   constructor(props) {
     super(props)
+
+    this.actions = ApiActions.forge(this.props.stateId)
 
     this.changePair = this.changePair.bind(this)
     this.startAll = this.startAll.bind(this)
@@ -99,7 +109,7 @@ class App extends Container {
     const isValidData = data.event === undefined && typeof data[1] !== 'string'
 
     if (isValidData && tickerData !== data) {
-      this.props.fetchingTicker(data[1])
+      this.actions.fetchingTicker(data[1])
     }
   }
 
@@ -118,25 +128,25 @@ class App extends Container {
         newData.unshift(theData)
       }
 
-      this.props.fetchingTrades(newData)
+      this.actions.fetchingTrades(newData)
     }
   }
 
   receiveBook(data) {
     const {
       bookData,
-      fetchingBook,
+      //fetchingBook,
     } = this.props
 
     const isValidData = data.event === undefined && typeof data[1] !== 'string'
     if (isValidData && bookData !== data) {
       const theData = Array.isArray(data[1][0]) ? data[1] : [data[1]]
-      fetchingBook(bookData.concat(theData))
+      this.actions.fetchingBook(bookData.concat(theData))
     }
   }
 
   changePair(newPair) {
-    this.props.updatePair(newPair)
+    this.actions.updatePair(newPair)
     this.offAll()
   }
 
@@ -147,17 +157,17 @@ class App extends Container {
 
   offTicker() {
     closeWebSocket('ticker')
-    this.props.stopTicker()
+    this.actions.stopTicker()
   }
 
   offTrades() {
     closeWebSocket('trades')
-    this.props.stopTrades()
+    this.actions.stopTrades()
   }
 
   offBook() {
     closeWebSocket('book')
-    this.props.stopBook()
+    this.actions.stopBook()
   }
 
   render() {
@@ -218,17 +228,17 @@ class App extends Container {
   }
 }
 
-const mapStateToProps = state => (mapState(state.AppReducer))
+// const mapStateToProps = state => (mapState(state.AppReducer))
 
-const mapDispatchToProps = dispatch => ({
-  fetchingTicker: (data) => dispatch(fetchingTicker(data)),
-  fetchingTrades: (data) => dispatch(fetchingTrades(data)),
-  fetchingBook: (data) => dispatch(fetchingBook(data)),
-  updatePair: (pair) => dispatch(updatePair(pair)),
-  stopAll: () => dispatch(stopAll()),
-  stopTicker: () => dispatch(stopTicker()),
-  stopTrades: () => dispatch(stopTrades()),
-  stopBook: () => dispatch(stopBook()),
-})
+// const mapDispatchToProps = dispatch => ({
+//   fetchingTicker: (data) => dispatch(fetchingTicker(data)),
+//   fetchingTrades: (data) => dispatch(fetchingTrades(data)),
+//   fetchingBook: (data) => dispatch(fetchingBook(data)),
+//   updatePair: (pair) => dispatch(updatePair(pair)),
+//   stopAll: () => dispatch(stopAll()),
+//   stopTicker: () => dispatch(stopTicker()),
+//   stopTrades: () => dispatch(stopTrades()),
+//   stopBook: () => dispatch(stopBook()),
+// })
 
-export default connect(mapStateToProps, mapDispatchToProps)(App)
+// export default connect(mapStateToProps)(App)
