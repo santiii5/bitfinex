@@ -52,6 +52,7 @@ class App extends Container {
       tradesStatus,
       bookStatus,
     } = newProps
+
     if(newPair !== pair && !tickerStatus && !tradesStatus && !bookStatus) {
       this.startAll(newProps)
     }
@@ -64,6 +65,7 @@ class App extends Container {
       bookStatus,
       pair,
     } = props
+
     !tickerStatus && startTickerWebsocket(this.receiveTicker, pair)
     !tradesStatus && startTradesWebsocket(this.receiveTrades, pair)
     !bookStatus && startBookWebsocket(this.receiveBook, pair)

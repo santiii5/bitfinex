@@ -1,6 +1,6 @@
 import Reducer from './reducer'
 import actionTypes from '../actiontypes/api'
-// import Immutable from 'immutable'
+import Immutable from 'immutable'
 
 class AppReducer extends Reducer {
 	constructor() {
@@ -15,9 +15,9 @@ class AppReducer extends Reducer {
       tickerStatus: false,
       tradesStatus: false,
       bookStatus: false,
-      tickerData: [],
-      bookData: [],
-      tradesData: [],
+      tickerData: Immutable.List(),
+      bookData: Immutable.List(),
+      tradesData: Immutable.List(),
 		})
 
     this.registerAction(actionTypes.FETCHING_TICKER, (state, action) => {
@@ -33,7 +33,7 @@ class AppReducer extends Reducer {
 		})
 
     this.registerAction(actionTypes.UPDATE_PAIR, (state, action) => {
-      return state.set('pair', action.data)
+      return state.set('pair', action.data).set('bookData', Immutable.List())
 		})
 
     this.registerAction(actionTypes.STOP_ALL, (state, action) => {
