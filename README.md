@@ -1,5 +1,7 @@
 ## Bitfinex Frontend Developer Programming Challenge
 
+Online version: http://bitfinex.cronnection.at/
+
 ## Overview
 Create a web application that replicates the Order Book, Trades and Ticker widgets functionality from the Trading page of the [Bitfinex website](https://www.bitfinex.com/trading).
 
