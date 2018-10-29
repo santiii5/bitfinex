@@ -19,7 +19,9 @@ let finalCreateStore = null
 if (process.env.NODE_ENV === 'production') {
 	finalCreateStore = compose(
 		// Enables your middleware:
-		applyMiddleware(thunkMiddleware)
+		applyMiddleware(
+			thunkMiddleware
+		)
 	)(createStore)
 }
 else {

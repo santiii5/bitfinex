@@ -1,26 +1,33 @@
-## Bitfinex Frontend Developer Programming Challenge
+## Bitfinex dashboard training project
 
-Online version: http://bitfinex.cronnection.at/
+[Online demo](http://bitfinex.cronnection.at/)
 
 ## Overview
-Create a web application that replicates the Order Book, Trades and Ticker widgets functionality from the Trading page of the [Bitfinex website](https://www.bitfinex.com/trading).
+Training project using:
 
-## Order Book
-Similarly to the book from the website, the created Order Book should have the ability to change precision of the price column, and to change scaling of the depth bars. Price alerts management and layout configuration features are not required.
+- create-react-app
+- Bitfinex API
+- Websocket
+- React
+- Redux
 
-## Trades
-The trades widget is supposed to show trades executed on the market, showing a user’s own trades via authenticated API access is not required.
+## Components
+3 basic components using the Bitfinex information
 
-## Ticker
-Ticker is a small widget that shows the current trade pair, 24 hours volume, 24 hours price change in percents, and last price for that pair.
+- Order book
+- Price ticker
+- Trades book
 
-## General Requirements
-All of the widgets should conceptually be the same as the corresponding widgets on the Bitfinex website. They should show the data in real time, and should have the ability to recover after lost network connection. Add some controls to manage the websocket connection such as “Connect” and “Disconnect” buttons.
+## Functionality
 
-## Technological Requirements
-Use React for rendering and Redux to store the market data. Feel free to create a custom CSS style for the widgets, it can be very simple. Use Bitfinex [WebSocket V2 API](https://docs.bitfinex.com/v2/docs) to obtain the data.
+- Each Websocket channel can be stopped and restarted.
+- The coin pair can be changed between BTCUSD, LTCUSD and ETHUSD
 
-## Suggestions
-Use this [React template](https://github.com/facebook/create-react-app) to bootstrap your application quickly
+## TODO
 
-## PROJECT DESCRIPTION
+- Add code documentation
+- Improve Book component data handle
+- Add Book component functionalities:
+    - Change precision of the price column
+    - Change scaling of the depth bars
+- Use redux middleware to handle Websocket calls
