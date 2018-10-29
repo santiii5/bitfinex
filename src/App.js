@@ -1,21 +1,9 @@
 import React from 'react'
-import logo from './logo.png'
-import { mapState } from './helpers/utils'
-// import _ from 'lodash'
 import './App.css'
+import Immutable from 'immutable'
 import { connect } from 'react-redux'
-import { stateProxy } from '../stores'
+import { stateProxy } from './stores'
 import {startTickerWebsocket, startTradesWebsocket, startBookWebsocket, closeWebSocket} from './config/api'
-// import {
-//   fetchingTicker,
-//   fetchingTrades,
-//   fetchingBook,
-//   updatePair,
-//   stopAll,
-//   stopTicker,
-//   stopTrades,
-//   stopBook,
-// } from './actions/api-actions'
 import ApiActions from './actions/api-actions'
 import Container from './containers/container'
 import styled from 'styled-components'
@@ -23,18 +11,8 @@ import {
   Book,
   Trades,
   Ticker,
-  SocketOptions,
+  Header,
 } from './components/'
-
-const AppHeader = styled.div`
-  background-color: white;
-  color: black;
-  padding: 15px;
-
-  img {
-    max-width: 150px;
-  }
-`
 
 const AppLayout = styled.div`
   display: grid;
@@ -43,17 +21,6 @@ const AppLayout = styled.div`
   grid-gap: 15px;
 `
 
-const AppFooter = styled.div`
-  width: 500px;
-  margin: 0 auto;
-`
-export default @connect((state, props) => {
-	const userState = stateProxy(state.auth, props.stateId)
-
-	return {
-		auth: userState.get('auth'),
-	}
-})
 class App extends Container {
   constructor(props) {
     super(props)
@@ -99,7 +66,7 @@ class App extends Container {
     } = props
     !tickerStatus && startTickerWebsocket(this.receiveTicker, pair)
     !tradesStatus && startTradesWebsocket(this.receiveTrades, pair)
-    // !bookStatus && startBookWebsocket(this.receiveBook, pair)
+    !bookStatus && startBookWebsocket(this.receiveBook, pair)
   }
 
   receiveTicker(data) {
@@ -109,7 +76,7 @@ class App extends Container {
     const isValidData = data.event === undefined && typeof data[1] !== 'string'
 
     if (isValidData && tickerData !== data) {
-      this.actions.fetchingTicker(data[1])
+      this.dispatch(this.actions.fetchingTicker(data[1]))
     }
   }
 
@@ -128,46 +95,47 @@ class App extends Container {
         newData.unshift(theData)
       }
 
-      this.actions.fetchingTrades(newData)
+      this.dispatch(this.actions.fetchingTrades(newData))
     }
   }
 
   receiveBook(data) {
     const {
       bookData,
-      //fetchingBook,
     } = this.props
-
     const isValidData = data.event === undefined && typeof data[1] !== 'string'
+
     if (isValidData && bookData !== data) {
       const theData = Array.isArray(data[1][0]) ? data[1] : [data[1]]
-      this.actions.fetchingBook(bookData.concat(theData))
+      const newData = bookData.concat(theData)
+
+      this.dispatch(this.actions.fetchingBook(newData))
     }
   }
 
   changePair(newPair) {
-    this.actions.updatePair(newPair)
+    this.dispatch(this.actions.updatePair(newPair))
     this.offAll()
   }
 
   offAll(cb = null) {
     closeWebSocket('all')
-    this.props.stopAll()
+    this.dispatch(this.actions.stopAll())
   }
 
   offTicker() {
     closeWebSocket('ticker')
-    this.actions.stopTicker()
+    this.dispatch(this.actions.stopTicker())
   }
 
   offTrades() {
     closeWebSocket('trades')
-    this.actions.stopTrades()
+    this.dispatch(this.actions.stopTrades())
   }
 
   offBook() {
     closeWebSocket('book')
-    this.actions.stopBook()
+    this.dispatch(this.actions.stopBook())
   }
 
   render() {
@@ -184,61 +152,52 @@ class App extends Container {
 
     return (
       <div className="App">
-        <AppHeader>
-          <img src={logo} alt="logo" />
-        </AppHeader>
+        <Header
+          pair={pair}
+          availablePairs={Immutable.Iterable.isIterable(availablePairs) ? availablePairs.toJS() : []}
+          changePair={this.changePair}
+          startSocket={this.startAll}
+          stopSocket={this.offAll}
+          startText="Start All"
+          stopText="Stop all"
+          status={tickerStatus && tradesStatus && bookStatus} />
         <AppLayout>
           <Ticker
             data={tickerData}
             pair={pair}
-            availablePairs={availablePairs}
-            changePair={this.changePair}
             startWebsocket={startTickerWebsocket.bind(this, this.receiveTicker, pair)}
             stopWebsocket={this.offTicker}
             status={tickerStatus}
-            socketText="Ticker"
           />
           <Trades
-            data={tradesData}
+            data={Array.isArray(tradesData) ? tradesData : []}
             startWebsocket={startTradesWebsocket.bind(this, this.receiveTrades, pair)}
             stopWebsocket={this.offTrades}
             status={tradesStatus}
-            socketText="Trades"
           />
           <Book
-            data={bookData}
+            data={Immutable.Iterable.isIterable(bookData) ? bookData.toJS() : []}
             startWebsocket={startBookWebsocket.bind(this, this.receiveBook, pair)}
             stopWebsocket={this.offBook}
             status={bookStatus}
-            socketText="Book"
           />
         </AppLayout>
-        <AppFooter>
-          <SocketOptions
-            startSocket={this.startAll}
-            stopSocket={this.offAll}
-            startText="Start All"
-            stopText="Stop all"
-            socketText="All sockets"
-            status={tickerStatus && tradesStatus && bookStatus}
-          />
-        </AppFooter>
       </div>
     );
   }
 }
 
-// const mapStateToProps = state => (mapState(state.AppReducer))
+export default connect((state, props) => {
+	const apiState = stateProxy(state.AppReducer, props.stateId)
 
-// const mapDispatchToProps = dispatch => ({
-//   fetchingTicker: (data) => dispatch(fetchingTicker(data)),
-//   fetchingTrades: (data) => dispatch(fetchingTrades(data)),
-//   fetchingBook: (data) => dispatch(fetchingBook(data)),
-//   updatePair: (pair) => dispatch(updatePair(pair)),
-//   stopAll: () => dispatch(stopAll()),
-//   stopTicker: () => dispatch(stopTicker()),
-//   stopTrades: () => dispatch(stopTrades()),
-//   stopBook: () => dispatch(stopBook()),
-// })
-
-// export default connect(mapStateToProps)(App)
+	return {
+    pair: apiState.get('pair') || state.AppReducer.get('pair'),
+    availablePairs: apiState.get('availablePairs'),
+    tickerStatus: apiState.get('tickerStatus'),
+    tradesStatus: apiState.get('tradesStatus'),
+    bookStatus: apiState.get('bookStatus'),
+    tickerData: apiState.get('tickerData'),
+    bookData: apiState.get('bookData'),
+    tradesData: apiState.get('tradesData'),
+	}
+})(App)

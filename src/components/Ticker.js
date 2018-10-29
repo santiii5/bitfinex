@@ -4,15 +4,37 @@ import SocketOptions from './SocketOptions'
 import Container from '../containers/container'
 import styled from 'styled-components'
 import { numberFormat, numberWithCommas } from '../helpers/utils'
+import { ComponentHeader, ComponentContent, color3 } from '../Style'
 
-const TickerLayout = styled.div``
+const TickerLayout = styled.div`
+  p {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 15px;
+    border-bottom: 1px solid white;
+    margin: 0;
+    border-bottom: 1px solid #7887a9;
+    padding: 15px 0;
 
+    &:last-child {
+      border-bottom: none;
+    }
+
+    span {
+      text-align: right;
+    }
+  }
+`
+
+const Price = styled.span`
+  font-size: 22px;
+  color: ${color3};
+  font-weight: bold;
+`
 export default class Ticker extends Container {
   static propTypes = {
 		data: PropTypes.array,
-    pair: PropTypes.string.isRequired,
-    availablePairs: PropTypes.array.isRequired,
-    changePair: PropTypes.func.isRequired,
+    pair: PropTypes.string,
     startWebsocket: PropTypes.func.isRequired,
     stopWebsocket: PropTypes.func.isRequired,
     socketText: PropTypes.string,
@@ -23,77 +45,51 @@ export default class Ticker extends Container {
 		data: null,
 	}
 
-  updatePair(newPair) {
-    const {
-      changePair,
-    } = this.props
-
-    changePair(this.refs.pairSelector.value)
-  }
-
-  renderPairSelector() {
-    const {
-      availablePairs,
-      pair,
-    } = this.props
-    const selectorOptions = []
-
-    availablePairs && availablePairs.forEach((avPair, key) => {
-      let htmlElem = <option key={key} value={avPair}>{avPair}</option>
-      pair === avPair ? selectorOptions.unshift(htmlElem) : selectorOptions.push(htmlElem)
-    })
-
-    const selector = (
-      <select ref="pairSelector" onChange={this.updatePair.bind(this)}>
-        {selectorOptions}
-      </select>
-    )
-
-    return selector
-  }
-
   render() {
     const {
-      data,
       pair,
       startWebsocket,
       stopWebsocket,
       socketText,
       status,
     } = this.props
-    const pairSelector = this.renderPairSelector()
+
+    const data = this.props.data || {}
     let lastPrice
     let percentChangeDay
     let dayVolume
+    let component = 'Loading ticker'
 
-    if (Object.keys(data).length > 0) {
+    if (data.length > 0) {
       lastPrice = numberWithCommas(data[6].toFixed(2))
       percentChangeDay = data[5]
       dayVolume = data[7]
+      const colorStyle = percentChangeDay > 0 ? 'green' : 'red'
+
+      component = (
+        <div>
+          <p><b>{pair}</b></p>
+          <p>Last price: <Price>${lastPrice}</Price></p>
+          <p>% Change 24h: <span style={{color: colorStyle, fontSize: '18px'}}>{percentChangeDay}</span></p>
+          <p>24h volume: <span>{numberWithCommas(numberFormat(dayVolume))}</span></p>
+        </div>
+      )
     }
-
-    const colorStyle = percentChangeDay > 0 ? 'green' : 'red'
-
-    const component = data ? (
-      <div>
-        <p>{pair}</p>
-        <p>Last price: ${lastPrice}</p>
-        <p>% Change 24h: <span style={{color: colorStyle, fontSize: '18px'}}>{percentChangeDay}</span></p>
-        <p>24h volume: {numberWithCommas(numberFormat(dayVolume))}</p>
-      </div>
-    ) : 'Loading ticker'
 
     return (
       <TickerLayout>
-        <h3>Ticker</h3>
-        <div>{pairSelector}</div>
-        {component}
-        <SocketOptions
-          startSocket={startWebsocket.bind(this)}
-          stopSocket={stopWebsocket.bind(this)}
-          socketText={socketText}
-          status={status}
-        />
+        <ComponentHeader>
+          <h3>Ticker</h3>
+          <SocketOptions
+            startSocket={startWebsocket.bind(this)}
+            stopSocket={stopWebsocket.bind(this)}
+            socketText={socketText}
+            status={status}
+          />
+        </ComponentHeader>
+        <ComponentContent>
+          {component}
+        </ComponentContent>
       </TickerLayout>
     )
   }

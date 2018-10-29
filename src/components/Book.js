@@ -5,16 +5,23 @@ import Container from '../containers/container'
 import { numberWithCommas } from '../helpers/utils'
 import { TableRow } from '../Style'
 import styled from 'styled-components'
+import { ComponentHeader, ComponentContent, color3 } from '../Style'
 
 const BookLayout = styled.div`
 `
 
 const BookSelling = styled.div`
-  background-color: red;
+  div div:first-child {
+    color: red;
+  }
 `
 
 const BookBuying = styled.div`
-  background-color: green;
+  border-top: 1px dashed white;
+
+  div div:first-child {
+    color: ${color3};
+  }
 `
 
 export default class Book extends Container {
@@ -47,7 +54,6 @@ export default class Book extends Container {
 
   render() {
     const {
-      data,
       startWebsocket,
       stopWebsocket,
       socketText,
@@ -57,43 +63,49 @@ export default class Book extends Container {
     let listSelling = []
     const elemBuying = []
     const elemSelling = []
+    const data = this.props.data || {}
+    let component = 'No books data yet'
 
-    if(Object.keys(data).length > 0) {
+    if(data.length > 0) {
       data.slice(0, 50).forEach((trade, key) => {
         trade[2] > 0 ? listBuying.push(trade) : listSelling.push(trade)
       })
 
       // TODO: handle properly the array order
-      listBuying.forEach((trade, key) => elemBuying.push(this.renderElement(trade, key)))
-      listSelling.reverse().forEach((trade, key) => elemSelling.push(this.renderElement(trade, key)))
-    }
+      listBuying.slice(0, 10).forEach((trade, key) => elemBuying.push(this.renderElement(trade, key)))
+      listSelling.slice(0, 10).reverse().forEach((trade, key) => elemSelling.push(this.renderElement(trade, key)))
 
-    const component = data ? (
-      <div>
-        <TableRow header={true}>
-          <div>Price</div>
-          <div>Orders</div>
-          <div>Amount</div>
-        </TableRow>
-        <BookSelling>
-          {elemSelling}
-        </BookSelling>
-        <BookBuying>
-          {elemBuying}
-        </BookBuying>
-      </div>
-    ) : 'Loading book...'
+      component = (
+        <div>
+          <TableRow header={true}>
+            <div>Price</div>
+            <div>Orders</div>
+            <div>Amount</div>
+          </TableRow>
+          <BookSelling>
+            {elemSelling}
+          </BookSelling>
+          <BookBuying>
+            {elemBuying}
+          </BookBuying>
+        </div>
+      )
+    }
 
     return (
       <BookLayout>
-        <h3>Book</h3>
-        {component}
-        <SocketOptions
-          startSocket={startWebsocket.bind(this)}
-          stopSocket={stopWebsocket.bind(this)}
-          socketText={socketText}
-          status={status}
-        />
+        <ComponentHeader>
+          <h3>Book</h3>
+          <SocketOptions
+            startSocket={startWebsocket.bind(this)}
+            stopSocket={stopWebsocket.bind(this)}
+            socketText={socketText}
+            status={status}
+          />
+        </ComponentHeader>
+        <ComponentContent>
+          {component}
+        </ComponentContent>
       </BookLayout>
     )
   }

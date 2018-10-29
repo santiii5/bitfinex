@@ -2,7 +2,7 @@ import styled, {css} from 'styled-components'
 
 export const color = '#061a44'
 export const color2 = '#010e2c'
-export const color3 = '#053c18'
+export const color3 = '#0dd20d'
 
 export const lightBlueBackground = `background-color: ${color}`
 export const backgroundColor2 = `background-color: ${color2}`
@@ -26,16 +26,20 @@ export const TableRow = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   border-bottom: 1px solid grey;
-  padding: 2px 5px;
+  padding: 5px;
   justify-items: right;
 
   .amount {
     color: red;
   }
 
+  div:first-child {
+    justify-self: left;
+  }
+
   ${props => props.positiveAmount && css`
     .amount {
-      color: green;
+      color: ${color3};
     }
   `}
 
@@ -44,10 +48,14 @@ export const TableRow = styled.div`
     color: yellow;
     font-weight: bold;
   `}
+
+  &:last-child {
+    border-bottom: none;
+  }
 `
 
 export const Button = styled.button`
-  padding: 8px 15px;
+  padding: 5px;
   font-size: 16px;
   border: none;
   border-radius: 3px;
@@ -81,31 +89,20 @@ export const Button = styled.button`
   `}
 `
 
-export const SocketControl = styled.div`
+export const ComponentHeader = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 3fr 1fr;
   grid-gap: 15px;
-  margin-top: 20px;
+  width: 100%;
+  background-color: #fcfcfd;
+  padding: 10px 0 10px 10px;
+  border-radius: 2px 2px 0 0;
+  color: #00131e;
+  box-sizing: border-box;
 `
 
-export const SocketStatus = styled.div`
-  position: relative;
-  font-size: 12px;
-  text-align:right;
-  padding: 10px 20px 0 0;
-
-  &::after {
-    position: absolute;
-    right: 0;
-    top: 12px;
-    content: " ";
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background-color: red;
-
-    ${props => props.status && css`
-      background-color: green;
-    `}
-  }
+export const ComponentContent = styled.div`
+  border-radius: 0 0 2px 2px;
+  padding: 10px 15px;
+  background-color: #454e65;
 `

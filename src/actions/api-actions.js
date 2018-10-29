@@ -1,8 +1,5 @@
 import Actions from './actions'
 import actionTypes from '../actiontypes/api'
-import {startTickerWebsocket, startTradesWebsocket, startBookWebsocket, closeWebSocket} from '../config/api'
-
-// import Utils from 'app/_globals/helpers/utils'
 
 export default class ApiActions extends Actions {
 	actionTypes = actionTypes;

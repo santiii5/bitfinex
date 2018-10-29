@@ -5,8 +5,5 @@ body {
 }
 
 h3 {
-  width: 100%;
-  background-color: #1845ab;
-  padding: 5px;
-  border-radius: 3px;
+  margin: 5px;
 }

@@ -1,10 +1,10 @@
 const webSocketUrl = 'wss://api.bitfinex.com/ws/2'
 let webSockets = {}
 
-export function startTickerWebsocket(callback, pair){
+export function startTickerWebsocket(callback, pair, oldData){
     const wss = new WebSocket(webSocketUrl)
     webSockets['ticker'] = wss
-    wss.onmessage = (evt) => { msgAndCallback(evt, callback) }
+    wss.onmessage = (evt) => { msgAndCallback(evt, callback, oldData) }
     wss.onclose = () => reOpenSocket.bind(this, startTickerWebsocket, webSocketUrl)
 
     let msg = JSON.stringify({
@@ -16,10 +16,10 @@ export function startTickerWebsocket(callback, pair){
     wss.onopen = () => wss.send(msg)
 }
 
-export function startTradesWebsocket(callback, pair){
+export function startTradesWebsocket(callback, pair, oldData){
     const wss = new WebSocket(webSocketUrl)
     webSockets['trades'] = wss
-    wss.onmessage = (evt) => { msgAndCallback(evt, callback) }
+    wss.onmessage = (evt) => { msgAndCallback(evt, callback, oldData) }
     wss.onclose = () => reOpenSocket.bind(this, startTradesWebsocket, webSocketUrl)
 
     let msg = JSON.stringify({
@@ -31,10 +31,10 @@ export function startTradesWebsocket(callback, pair){
     wss.onopen = () => wss.send(msg)
 }
 
-export function startBookWebsocket(callback, pair){
+export function startBookWebsocket(callback, pair, oldData){
     const wss = new WebSocket(webSocketUrl)
     webSockets['book'] = wss
-    wss.onmessage = (evt) => { msgAndCallback(evt, callback) }
+    wss.onmessage = (evt) => { msgAndCallback(evt, callback, oldData) }
     wss.onclose = () => reOpenSocket.bind(this, startBookWebsocket, webSocketUrl)
 
     let msg = JSON.stringify({
@@ -54,9 +54,9 @@ function reOpenSocket(callback, socket) {
   }
 }
 
-function msgAndCallback(msg, callback) {
+function msgAndCallback(msg, callback, oldData) {
   const dataFormatted = JSON.parse(msg.data)
-  callback && typeof callback === 'function' && callback(dataFormatted)
+  callback && typeof callback === 'function' && callback(dataFormatted, oldData)
   handleError(msg)
 }
 
